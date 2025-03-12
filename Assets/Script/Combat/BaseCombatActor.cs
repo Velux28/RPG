@@ -1,5 +1,9 @@
 using UnityEngine;
 
+
+[RequireComponent(typeof(HealthComponent))]
+[RequireComponent(typeof(StatsComponent))]
+[RequireComponent(typeof(ManaComponent))]
 public class BaseCombatActor : MonoBehaviour
 {
     protected HealthComponent actorHealth;
@@ -10,10 +14,17 @@ public class BaseCombatActor : MonoBehaviour
 
     protected float currTimer;
     protected int turnNum;
-    
+
+    [SerializeField]
+    protected string characterName;
+
+    public string CharacterName
+    {
+        get { return characterName; }
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         actorHealth = GetComponent<HealthComponent>();
         actorStats = GetComponent<StatsComponent>();
@@ -34,11 +45,11 @@ public class BaseCombatActor : MonoBehaviour
         return actorHealth.IsAlive;
     }
 
-    public virtual void WaitForAction()
+    public virtual bool WaitForAction()
     {
         if(!actorHealth.IsAlive)
         {
-            return;
+            return false;
         }
 
         currTimer += Time.deltaTime;
@@ -46,40 +57,40 @@ public class BaseCombatActor : MonoBehaviour
         if(currTimer >= actorStats.AttackCD)
         {
             turnNum++;
-            TakeAction();
             currTimer = 0;
+            return true;
         }
-
+        return false;
     }
 
-    protected virtual void TakeAction()
+    public virtual bool TakeAction()
     {
-
+        return true;
     }
 
     protected virtual void BaseAttack()
     {
-
+        Debug.Log(characterName + "Attack");
     }
 
     protected virtual void UseItem()
     {
-
+        Debug.Log(characterName + "Item");
     }
 
     protected virtual void PeculiarAction()
     {
-
+        Debug.Log(characterName + "Action");
     }
 
     protected virtual void Flee()
     {
-
+        Debug.Log(characterName + "Flee");
     }
 
     protected virtual void Defend()
     {
-
+        Debug.Log(characterName + "BLock");
     }
 
 }

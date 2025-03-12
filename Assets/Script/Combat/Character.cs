@@ -1,18 +1,15 @@
 using UnityEngine;
 
+[RequireComponent (typeof(HealthComponent))]
+[RequireComponent (typeof(StatsComponent))]
+[RequireComponent (typeof(ManaComponent))]
 public class Character : BaseCombatActor
 {
-    [SerializeField]
-    private string characterName;
 
     private int actionIndex;
     [SerializeField]
     private int maxAction = 5;
 
-    public string CharacterName
-    {
-        get { return characterName; }
-    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,19 +23,23 @@ public class Character : BaseCombatActor
         
     }
 
-    protected override void TakeAction()
+    public override bool TakeAction()
     {
         if(Input.GetKeyDown(KeyCode.DownArrow))
         {
-            actionIndex = actionIndex + 1 % maxAction;
+            actionIndex++;
+            actionIndex = actionIndex % maxAction;
+            Debug.Log(characterName + actionIndex);
         }
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            actionIndex = actionIndex - 1 % maxAction;
+            actionIndex--;
+            actionIndex = actionIndex % maxAction;
+            Debug.Log(characterName + actionIndex);
         }
 
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             switch (actionIndex)
             {
@@ -61,32 +62,34 @@ public class Character : BaseCombatActor
                     BaseAttack();
                     break;  
             }
+            return true;
         }
+        return false;
     }
 
     protected override void BaseAttack()
     {
-
+        base.BaseAttack();
         int x = actorStats.Strenght;
     }
     protected override void PeculiarAction()
     {
-        
+        base.PeculiarAction();
     }
 
     protected override void UseItem()
     {
-        throw new System.NotImplementedException();
+        base.UseItem();
     }
 
     protected override void Flee()
     {
-        throw new System.NotImplementedException();
+        base.Flee();
     }
 
     protected override void Defend()
     {
-
+        base.Defend();
     }
 
 }

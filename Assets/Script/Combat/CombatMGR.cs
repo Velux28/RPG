@@ -5,16 +5,18 @@ using UnityEngine;
 
 public class CombatMGR : MonoBehaviour
 {
+    [SerializeField]
     List<BaseCombatActor> playerActors; 
+    [SerializeField]
     List<BaseCombatActor> foeActors;
 
-    float battleTimer = 0;
+    private Queue<BaseCombatActor> attackQueue;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
-        
+        attackQueue = new Queue<BaseCombatActor>();
     }
 
     // Update is called once per frame
@@ -26,11 +28,21 @@ public class CombatMGR : MonoBehaviour
 
         }
 
+
+        if (attackQueue.Count > 0 && attackQueue.Peek().TakeAction()) 
+        {
+            Debug.Log("dequeue " + attackQueue.Peek().CharacterName);
+            attackQueue.Dequeue();
+        }
+
         for (int i = 0; i < playerActors.Count; i++)
         {
             if (playerActors[i].IsAlive())
             {
-                playerActors[i].WaitForAction();
+               if(playerActors[i].WaitForAction())
+               {
+                    attackQueue.Enqueue(playerActors[i]);
+               }
             }
         }
 
@@ -38,7 +50,10 @@ public class CombatMGR : MonoBehaviour
         {
             if (foeActors[i].IsAlive())
             {
-                foeActors[i].WaitForAction();
+                if(foeActors[i].WaitForAction())
+                {
+                    attackQueue.Enqueue(foeActors[i]);
+                }
             }
         }
     }
@@ -56,7 +71,7 @@ public class CombatMGR : MonoBehaviour
             }
         }
 
-        
+
         if (partyDead)
         {
             //give exp and level up
@@ -88,11 +103,12 @@ public class CombatMGR : MonoBehaviour
 
     void BattleFinish()
     {
-
+        Debug.Log("Win");
     }
 
     void GameOver()
     {
+        Debug.Log("Lost");
 
     }
 }
