@@ -47,6 +47,11 @@ public class StatsComponent : MonoBehaviour
     {
         get { return magicDefense; }
     }
+
+    public float AttackCD
+    {
+        get { return 100f / (float)speed * 2f; }
+    }
     #endregion
 
 

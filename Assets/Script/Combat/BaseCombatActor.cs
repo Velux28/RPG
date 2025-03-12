@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BaseCombatActor : MonoBehaviour, ICombatAction
+public class BaseCombatActor : MonoBehaviour
 {
     protected HealthComponent actorHealth;
 
@@ -8,12 +8,19 @@ public class BaseCombatActor : MonoBehaviour, ICombatAction
 
     protected ManaComponent actorMana;
 
+    protected float currTimer;
+    protected int turnNum;
+    
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         actorHealth = GetComponent<HealthComponent>();
         actorStats = GetComponent<StatsComponent>();
         actorMana = GetComponent<ManaComponent>();
+
+        currTimer = 0;
+        turnNum = 0;
     }
 
     // Update is called once per frame
@@ -22,32 +29,55 @@ public class BaseCombatActor : MonoBehaviour, ICombatAction
 
     }
 
-    protected void TakeAction()
+    public bool IsAlive()
+    {
+        return actorHealth.IsAlive;
+    }
+
+    public virtual void WaitForAction()
+    {
+        if(!actorHealth.IsAlive)
+        {
+            return;
+        }
+
+        currTimer += Time.deltaTime;
+
+        if(currTimer >= actorStats.AttackCD)
+        {
+            turnNum++;
+            TakeAction();
+            currTimer = 0;
+        }
+
+    }
+
+    protected virtual void TakeAction()
     {
 
     }
 
-    void ICombatAction.BaseAttack()
+    protected virtual void BaseAttack()
     {
 
     }
 
-    void ICombatAction.UseItem()
+    protected virtual void UseItem()
     {
 
     }
 
-    void ICombatAction.PeculiarAction()
+    protected virtual void PeculiarAction()
     {
 
     }
 
-    void ICombatAction.Flee()
+    protected virtual void Flee()
     {
 
     }
 
-    void ICombatAction.Defend()
+    protected virtual void Defend()
     {
 
     }
