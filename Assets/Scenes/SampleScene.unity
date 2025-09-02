@@ -1107,7 +1107,7 @@ MonoBehaviour:
   strenght: 0
   dexterity: 0
   magic: 0
-  speed: 25
+  speed: 50
   evasion: 0
   defense: 0
   magicDefense: 0

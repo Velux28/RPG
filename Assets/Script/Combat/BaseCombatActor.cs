@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -11,6 +12,8 @@ public class BaseCombatActor : MonoBehaviour
     protected StatsComponent actorStats;
 
     protected ManaComponent actorMana;
+
+    protected ActionInfo CharacterAction;
 
     protected float currTimer;
     protected int turnNum;
@@ -32,6 +35,10 @@ public class BaseCombatActor : MonoBehaviour
 
         currTimer = 0;
         turnNum = 0;
+
+        CharacterAction = new ActionInfo();
+
+        ResetAction();
     }
 
     // Update is called once per frame
@@ -45,6 +52,10 @@ public class BaseCombatActor : MonoBehaviour
         return actorHealth.IsAlive;
     }
 
+    /// <summary>
+    /// count for actor turn and if it's full increase turn count by one
+    /// </summary>
+    /// <returns>if i can  display the ui</returns>
     public virtual bool WaitForAction()
     {
         if(!actorHealth.IsAlive)
@@ -54,18 +65,19 @@ public class BaseCombatActor : MonoBehaviour
 
         currTimer += Time.deltaTime;
 
+        //Debug.Log(currTimer + "/" + actorStats.AttackCD);
         if(currTimer >= actorStats.AttackCD)
         {
-            turnNum++;
+            //turnNum++;
             currTimer = 0;
             return true;
         }
         return false;
     }
 
-    public virtual bool TakeAction()
+    public virtual ActionInfo TakeAction()
     {
-        return true;
+        return CharacterAction;
     }
 
     protected virtual void BaseAttack()
@@ -91,6 +103,14 @@ public class BaseCombatActor : MonoBehaviour
     protected virtual void Defend()
     {
         Debug.Log(characterName + "BLock");
+    }
+
+    public virtual void ResetAction()
+    {
+        CharacterAction.actionType = EActionType.None;
+        CharacterAction.target = 0;
+
+        CharacterAction.succsess = false;
     }
 
 }

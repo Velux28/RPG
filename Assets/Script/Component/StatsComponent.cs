@@ -50,7 +50,7 @@ public class StatsComponent : MonoBehaviour
 
     public float AttackCD
     {
-        get { return 100f / (float)speed * 2f; }
+        get { return 20f / (float)speed * 2f; }
     }
     #endregion
 

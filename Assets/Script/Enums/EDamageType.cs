@@ -13,3 +13,13 @@ public enum EDamageType
     Light = 64,
 
 }
+
+public enum EActionType
+{
+    None,
+    Meele,
+    ClassAction,
+    Defend,
+    Item,
+    Flee,
+}

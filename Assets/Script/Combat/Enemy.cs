@@ -15,7 +15,7 @@ public class Enemy : BaseCombatActor
         
     }
 
-    public override bool TakeAction()
+    public override ActionInfo TakeAction()
     {
         int i = Random.Range(0, 5);
 
@@ -41,7 +41,9 @@ public class Enemy : BaseCombatActor
                 break;
         }
 
-        return true;
+        CharacterAction.succsess = true;
+
+        return CharacterAction;
     }
 
     protected override void BaseAttack()

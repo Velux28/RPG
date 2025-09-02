@@ -16,7 +16,10 @@ public class CombatMGR : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        //for filling the lists use a safe file
         attackQueue = new Queue<BaseCombatActor>();
+        //playerActors = new List<BaseCombatActor>();
+        //foeActors = new List<BaseCombatActor>();
     }
 
     // Update is called once per frame
@@ -26,12 +29,14 @@ public class CombatMGR : MonoBehaviour
         {
             //change scene/ play victory cutscene
 
+            return;
         }
 
-
-        if (attackQueue.Count > 0 && attackQueue.Peek().TakeAction()) 
+        //if there's at least one action to consume, remove from queue and wait
+        if (attackQueue.Count > 0 && attackQueue.Peek().TakeAction().succsess == true)   
         {
-            Debug.Log("dequeue " + attackQueue.Peek().CharacterName);
+            attackQueue.Peek().ResetAction();
+            //Debug.Log("dequeue " + attackQueue.Peek().CharacterName);
             attackQueue.Dequeue();
         }
 
@@ -52,18 +57,34 @@ public class CombatMGR : MonoBehaviour
             {
                 if(foeActors[i].WaitForAction())
                 {
+                    
                     attackQueue.Enqueue(foeActors[i]);
                 }
             }
         }
     }
 
+    void FillPlayerAcor(List<BaseCombatActor> actors)
+    {
+        playerActors.Clear();
+
+        playerActors.AddRange(actors);
+    }
+
+
+    void FillFoeAcor(List<BaseCombatActor> actors)
+    {
+        foeActors.Clear();
+
+        foeActors.AddRange(actors);
+    }
+
     bool CheckBattleEnd()
     {
         bool partyDead = true;
-        for (int i = 0; i < foeActors.Count; i++)
+        foreach(BaseCombatActor actor in foeActors) 
         {
-            if (foeActors[i].IsAlive())
+            if (actor)
             {
                 //if a single member of the foe party is alive the battle is not finish
                 partyDead = false;
@@ -101,11 +122,17 @@ public class CombatMGR : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// function called when there's no more enemy
+    /// </summary>
     void BattleFinish()
     {
         Debug.Log("Win");
     }
 
+    /// <summary>
+    /// function called when the party is dead
+    /// </summary>
     void GameOver()
     {
         Debug.Log("Lost");
