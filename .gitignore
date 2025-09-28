@@ -71,3 +71,27 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+Unreal/rpg/Binaries/
+Unreal/rpg/DerivedDataCache/
+Unreal/rpg/Intermediate/
+Unreal/rpg/Saved/
+
+Unreal/rpg/.log
+
+Unreal/rpg/.vs/
+Unreal/rpg/.idea/
+Unreal/rpg/.vscode/
+
+Unreal/rpg/.VC.db
+Unreal/rpg/.VC.opendb
+Unreal/rpg/.suo
+Unreal/rpg/.user
+Unreal/rpg/.userprefs
+
+Unreal/rpg/Build/
+
+Unreal/rpg/.tmp
+Unreal/rpg/.bak
+Unreal/rpg/.backup
+
+Unreal/rpg/.dmp
