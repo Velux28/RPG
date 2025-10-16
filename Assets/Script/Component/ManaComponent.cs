@@ -26,14 +26,22 @@ public class ManaComponent : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Change The value of the mana keeping it between 0 and max mana
+    /// </summary>
+    /// <param name="manaAmount">if >0 add and if <0 decrease</param>
     public void UpdateMana(int manaAmount)
     {
         currMana = Mathf.Clamp(currMana + manaAmount, 0, maxMana);
     }
 
-    public void IncreaseMaxHealth(int newMaxmana)
+    /// <summary>
+    /// Change the value of Max mana of the of the actor, the current mana keeps the same proportion
+    /// </summary>
+    /// <param name="newMaxmana">The new max mana, maxMana = newMaxmana;</param>
+    public void ChangeMaxMana(int newMaxmana)
     {
-        currMana += newMaxmana - maxMana;
+        currMana = currMana*newMaxmana/maxMana;
         maxMana = newMaxmana;
     }
 }

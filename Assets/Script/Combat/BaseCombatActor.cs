@@ -44,7 +44,15 @@ public class BaseCombatActor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (CharacterAction.succsess)
+        {
+            return;
+        }
 
+        if (!CharacterAction.waitToAttack)
+        {
+            WaitForAction();
+        }
     }
 
     public bool IsAlive()
@@ -56,11 +64,11 @@ public class BaseCombatActor : MonoBehaviour
     /// count for actor turn and if it's full increase turn count by one
     /// </summary>
     /// <returns>if i can  display the ui</returns>
-    public virtual bool WaitForAction()
+    public virtual void WaitForAction()
     {
         if(!actorHealth.IsAlive)
         {
-            return false;
+            return;
         }
 
         currTimer += Time.deltaTime;
@@ -68,11 +76,8 @@ public class BaseCombatActor : MonoBehaviour
         //Debug.Log(currTimer + "/" + actorStats.AttackCD);
         if(currTimer >= actorStats.AttackCD)
         {
-            //turnNum++;
-            currTimer = 0;
-            return true;
+            CharacterAction.waitToAttack = true;
         }
-        return false;
     }
 
     public virtual ActionInfo TakeAction()
@@ -80,6 +85,28 @@ public class BaseCombatActor : MonoBehaviour
         return CharacterAction;
     }
 
+    public virtual void ResetAction()
+    {
+        //CharacterAction.actionType = EActionType.None;
+        //CharacterAction.target = 0;
+
+        //CharacterAction.succsess = false;
+    }
+
+    /// <summary>
+    /// decrease the character health
+    /// </summary>
+    /// <param name="damage">how much damage the character takes</param>
+    /// <returns>is the character alive</returns>
+    public virtual bool TakeDamage(int damage)
+    {
+        damage = Mathf.Abs(damage);
+        actorHealth.UpdateHealth(-damage);
+
+        return actorHealth.IsAlive;
+    }
+    
+    #region action
     protected virtual void BaseAttack()
     {
         Debug.Log(characterName + "Attack");
@@ -104,13 +131,6 @@ public class BaseCombatActor : MonoBehaviour
     {
         Debug.Log(characterName + "BLock");
     }
-
-    public virtual void ResetAction()
-    {
-        CharacterAction.actionType = EActionType.None;
-        CharacterAction.target = 0;
-
-        CharacterAction.succsess = false;
-    }
+#endregion
 
 }

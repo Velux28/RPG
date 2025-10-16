@@ -6,9 +6,6 @@ using UnityEngine;
 [RequireComponent (typeof(ManaComponent))]
 public class Character : BaseCombatActor
 {
-
-    private int actionIndex;
-    private int targetIndex;
     [SerializeField]
     private int maxAction = 5;
 
@@ -16,9 +13,7 @@ public class Character : BaseCombatActor
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        actionIndex = 0;
-
-        //CharacterAction = new ActionInfo();
+        CharacterAction.actionType=EActionType.Meele;
 
         //CharacterAction.actionType.Enqueue(EActionType.None);
         //CharacterAction.target.Enqueue(0);
@@ -34,10 +29,11 @@ public class Character : BaseCombatActor
     {
         if(Input.GetKeyDown(KeyCode.DownArrow))
         {
-            if (CharacterAction.actionType == EActionType.None)
+            if (CharacterAction.actionSelected == false)
             {
-                actionIndex++;
-                Debug.Log(characterName + actionIndex);
+                int x = (int)CharacterAction.actionType + 1;
+                CharacterAction.actionType = (EActionType)(x % (int)EActionType.Flee);
+                Debug.Log(characterName +": "+ CharacterAction.actionType);
             }
             //else
             //{
@@ -48,10 +44,11 @@ public class Character : BaseCombatActor
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            if (CharacterAction.actionType == EActionType.None)
+            if (CharacterAction.actionSelected == false)
             {
-                actionIndex--;
-                Debug.Log(characterName + actionIndex);
+                int x = (int)CharacterAction.actionType - 1;
+                CharacterAction.actionType = (EActionType)(x % (int)EActionType.Flee);
+                Debug.Log(characterName + ": " + CharacterAction.actionType);
             }
             //else
             //{
@@ -64,27 +61,9 @@ public class Character : BaseCombatActor
         if (Input.GetKeyDown(KeyCode.Space))
         {
 
-            if (CharacterAction.actionType == EActionType.None)
+            if (CharacterAction.actionSelected == false)
             {
-                actionIndex = maxAction % actionIndex;
-                switch (actionIndex)
-                {
-                    case 0:
-                        BaseAttack();
-                        break;
-                    case 1:
-                        PeculiarAction();
-                        break;
-                    case 2:
-                        UseItem();
-                        break;
-                    case 3:
-                        Flee();
-                        break;
-                    case 4:
-                        Defend();
-                        break;
-                }
+                CharacterAction.actionSelected = true;
             }
             else
             {

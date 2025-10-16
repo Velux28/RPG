@@ -8,5 +8,7 @@ public class ActionInfo
     public EActionType actionType;
     public int target;
 
+    public bool waitToAttack = false;
+    public bool actionSelected = false;
     public bool succsess = false;
 }

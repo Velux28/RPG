@@ -16,7 +16,6 @@ public enum EDamageType
 
 public enum EActionType
 {
-    None,
     Meele,
     ClassAction,
     Defend,

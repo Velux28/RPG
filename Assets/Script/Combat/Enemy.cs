@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class Enemy : BaseCombatActor
 {
-
+    [SerializeField]
+    private float fleeChance = 1;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+                
     }
 
     // Update is called once per frame
@@ -17,31 +18,23 @@ public class Enemy : BaseCombatActor
 
     public override ActionInfo TakeAction()
     {
-        int i = Random.Range(0, 5);
+        //choose target 
+        CharacterAction.target = Random.Range(0, 4);
 
-        switch (i)
-        {
-            case 0:
-                BaseAttack();
-                break;
-            case 1:
-                PeculiarAction();
-                break;
-            case 2:
-                UseItem();
-                break;
-            case 3:
-                Flee();
-                break;
-            case 4:
-                Defend();
-                break;
-            default:
-                BaseAttack();
-                break;
-        }
+        //choose action
+        CharacterAction.actionType = EActionType.Meele;
 
+        //lover the hp higher the chance to flee
+        //float flee = fleeChance/actorHealth.HealthPerc;
+
+        //if (flee > Random.RandomRange(0, fleeChance))
+        //{
+
+        //}
+
+        CharacterAction.actionSelected = true;
         CharacterAction.succsess = true;
+        CharacterAction.waitToAttack = false;
 
         return CharacterAction;
     }
