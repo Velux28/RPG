@@ -11,6 +11,7 @@ public class CombatMGR : MonoBehaviour
     List<BaseCombatActor> foeActors;
 
     private Queue<BaseCombatActor> attackQueue;
+    private BaseCombatActor currAttacker;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -25,45 +26,89 @@ public class CombatMGR : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(CheckBattleEnd())
+        if (CheckBattleEnd())
         {
-            //change scene/ play victory cutscene
+            //player is dead
+
+            return;
+        }
+        else if (CheckBattleEnd(false))
+        {
+            //enemy is dead
 
             return;
         }
 
-        //if there's at least one action to consume, remove from queue and wait
-        if (attackQueue.Count > 0 && attackQueue.Peek().TakeAction().succsess == true)   
+        WaitForAction();
+
+        if (attackQueue.Count == 0)
         {
-            attackQueue.Peek().ResetAction();
-            //Debug.Log("dequeue " + attackQueue.Peek().CharacterName);
-            attackQueue.Dequeue();
+            return;
         }
 
-        for (int i = 0; i < playerActors.Count; i++)
+        //if there's at least one action to consume, remove from queue and wait and assign the curr combat actor
+        if (currAttacker == null)
         {
-            if (playerActors[i].IsAlive())
+            //attackQueue.Peek().ResetAction();
+            //Debug.Log("dequeue " + attackQueue.Peek().CharacterName);
+            currAttacker = attackQueue.Dequeue();
+        }
+
+        if (currAttacker.IsActionCompleted)
+        {
+            //remove actor from queue and reset variables
+            currAttacker.ResetAction();
+            currAttacker = null;
+        }
+        else if (currAttacker.IsActionSelected)
+        {
+            ChooseTarget();
+        }
+        else if(currAttacker.IsWaitingForAction)
+        {
+            TakeAction();
+        }
+
+
+    }
+
+    void WaitForAction()
+    {
+        foreach (BaseCombatActor player in playerActors)
+        {
+            if (player.IsAlive())
             {
-               if(playerActors[i].WaitForAction())
-               {
-                    attackQueue.Enqueue(playerActors[i]);
-               }
+                player.WaitForAction();
+                if (player.IsWaitingForAction)
+                {
+                    attackQueue.Enqueue(player);
+                }
             }
         }
 
-        for (int i = 0; i < foeActors.Count; i++)
+        foreach (BaseCombatActor foe in foeActors)
         {
-            if (foeActors[i].IsAlive())
+            if (foe.IsAlive())
             {
-                if(foeActors[i].WaitForAction())
+                foe.WaitForAction();
+                if (foe.IsWaitingForAction)
                 {
-                    
-                    attackQueue.Enqueue(foeActors[i]);
+
+                    attackQueue.Enqueue(foe);
                 }
             }
         }
     }
 
+    void TakeAction()
+    {
+        currAttacker.TakeAction();
+    }
+
+    void ChooseTarget()
+    {
+        currAttacker.ChooseTarget();
+    }
     void FillPlayerAcor(List<BaseCombatActor> actors)
     {
         playerActors.Clear();
@@ -79,12 +124,28 @@ public class CombatMGR : MonoBehaviour
         foeActors.AddRange(actors);
     }
 
-    bool CheckBattleEnd()
+    bool CheckBattleEnd(bool checkPlayer=true)
     {
         bool partyDead = true;
-        foreach(BaseCombatActor actor in foeActors) 
+
+        if(checkPlayer)
         {
-            if (actor)
+            foreach (BaseCombatActor actor in playerActors)
+            {
+                if (actor.IsAlive())
+                {
+                    //if a single member of the foe party is alive the battle is not finish
+                    partyDead = false;
+                    break;
+                }
+            }
+            return partyDead;
+        }
+
+
+        foreach (BaseCombatActor actor in foeActors)
+        {
+            if (actor.IsAlive())
             {
                 //if a single member of the foe party is alive the battle is not finish
                 partyDead = false;
@@ -92,34 +153,7 @@ public class CombatMGR : MonoBehaviour
             }
         }
 
-
-        if (partyDead)
-        {
-            //give exp and level up
-            BattleFinish();
-            return true;
-        }
-
-        partyDead = true;
-
-        for (int i = 0; i < playerActors.Count; i++)
-        {
-            if (playerActors[i].IsAlive())
-            {
-                //if a single member of the foe party is alive the battle is not finish
-                partyDead = false;
-                break;
-            }
-        }
-
-        if (partyDead)
-        {
-            //ends the battle and restart from save
-            GameOver();
-            return true;
-        }
-
-        return false;
+        return partyDead;
     }
 
     /// <summary>

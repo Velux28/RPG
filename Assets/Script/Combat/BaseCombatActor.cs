@@ -26,6 +26,22 @@ public class BaseCombatActor : MonoBehaviour
         get { return characterName; }
     }
 
+    public bool IsWaitingForAction
+    {
+        get { return CharacterAction.waitToAttack; }
+    }
+
+    public bool IsActionSelected
+    {
+        get { return CharacterAction.actionSelected; }
+    }
+
+    public bool IsActionCompleted
+    {
+        get { return CharacterAction.succsess; }
+    }
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -76,6 +92,7 @@ public class BaseCombatActor : MonoBehaviour
         //Debug.Log(currTimer + "/" + actorStats.AttackCD);
         if(currTimer >= actorStats.AttackCD)
         {
+            currTimer = actorStats.AttackCD;
             CharacterAction.waitToAttack = true;
         }
     }
@@ -87,10 +104,14 @@ public class BaseCombatActor : MonoBehaviour
 
     public virtual void ResetAction()
     {
-        //CharacterAction.actionType = EActionType.None;
-        //CharacterAction.target = 0;
+        CharacterAction.succsess = false;
+        CharacterAction.actionSelected = false;
+        CharacterAction.waitToAttack = false;
+    }
 
-        //CharacterAction.succsess = false;
+    public virtual void ChooseTarget()
+    {
+
     }
 
     /// <summary>
@@ -106,7 +127,7 @@ public class BaseCombatActor : MonoBehaviour
         return actorHealth.IsAlive;
     }
     
-    #region action
+    #region actions
     protected virtual void BaseAttack()
     {
         Debug.Log(characterName + "Attack");

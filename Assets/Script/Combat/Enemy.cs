@@ -32,7 +32,7 @@ public class Enemy : BaseCombatActor
 
         //}
 
-        CharacterAction.actionSelected = true;
+        CharacterAction.actionSelected = true;  
         CharacterAction.succsess = true;
         CharacterAction.waitToAttack = false;
 
